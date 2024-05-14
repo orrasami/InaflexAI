@@ -1,8 +1,8 @@
 from office365_api import SharePoint
-import re
 from io import BytesIO
-import pandas as pd
 from docx import Document
+import re, sys
+import pandas as pd
 
 # 1 args = SharePoint folder name. May include subfolders YouTube/2022
 # FOLDER_NAME = sys.argv[1]
@@ -18,7 +18,7 @@ def get_file_list(folder_name):
     file_list = SharePoint()._get_files_list(folder_name)
     files = []
     for file in file_list:
-        FILE_NAME = file.properties["Name"]
+        FILE_NAME = file.name
         extension = get_file_extension(FILE_NAME)
         if extension:
             if extension == "docx":
@@ -29,7 +29,6 @@ def get_file_list(folder_name):
 
 def crate_table(files):
     DOCUMENTS = []
-    document = {}
     for FILE_NAME in files:
         file_obj = SharePoint().download_file(FILE_NAME, FOLDER_NAME)
         CONTENT = get_file_text(file_obj)
